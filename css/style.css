@@ -43,6 +43,7 @@ body[data-theme="dark"] {
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
+    clip-path: inset(0 0 0 0);
 }
 
 /* Responsive container scaling */
@@ -155,6 +156,10 @@ body[data-theme="dark"] {
 
 .logo {
   width: 100%;
+}
+
+.pages {
+  pointer-events: none;
 }
 
 /* Theme Toggle Button */
