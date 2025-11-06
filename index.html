@@ -103,7 +103,7 @@
                     bookDiv.innerHTML = `
                         <img class="cover" src="${book.cover_url}" 
                              alt="${book.title}"
-                             style="width: 200px; height: ${bookHeight}px; transform: translateZ(${pages/2}px)"
+                             style="width: 200px; height: ${bookHeight}px; display: block; vertical-align: top; transform: translateZ(${pages/2}px);"
                              onerror="this.style.backgroundColor='${book.cover_color}'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='${book.title}';">
                         </img>
                         <div class="spine" style="width: ${pages}px; height: ${bookHeight}px; background: ${book.cover_color || '#8B4513'} linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.1) 80%, rgba(255,255,255,0) 100%); color: ${book.cover_contrast || '#eee'}; line-height: ${pages}px; transform: translateX(-${pages/2}px) translateY(-${bookHeight}px) rotateY(-90deg);">
