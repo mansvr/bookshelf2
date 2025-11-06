@@ -38,11 +38,13 @@ body[data-theme="dark"] {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    padding: 20px;
+    padding: 20px 20px 100px 20px;
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     position: relative;
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
 }
 
 /* Responsive container scaling */
@@ -157,7 +159,11 @@ body[data-theme="dark"] {
   width: 100%;
 }
 
-.pages,
+.pages {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .side {
   pointer-events: none;
 }
