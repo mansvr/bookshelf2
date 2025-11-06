@@ -58,19 +58,46 @@
                 const container = document.getElementById('bookshelf');
                 container.innerHTML = '';
 
+                // Calculate total width and max height
+                let totalWidth = 0;
+                let maxHeight = 0;
                 books.forEach(book => {
+                    const thickness = book.nonlinear_thickness || 20;
+                    const height = 200 / (book.aspect_ratio || 0.67);
+                    totalWidth += thickness;
+                    maxHeight = Math.max(maxHeight, height);
+                });
+
+                // Set container dimensions
+                container.style.perspective = '800px';
+                container.style.height = '300px';
+                container.style.width = (totalWidth + 400) + 'px';
+
+                // Render each book with positioning
+                let offset = 0;
+                books.forEach((book, index) => {
                     // Calculate dimensions
                     const pages = book.page_count || 300;
                     const nonlinearThickness = book.nonlinear_thickness || 20;
                     const aspectRatio = book.aspect_ratio || 0.67;
                     const bookHeight = 200 / aspectRatio;
                     
+                    // Create book container with positioning
+                    const bookContainer = document.createElement('div');
+                    bookContainer.className = 'book-container';
+                    bookContainer.style.transform = `translateX(${offset + nonlinearThickness/2}px) translateY(${maxHeight - bookHeight}px)`;
+                    
                     // Create book element
                     const bookDiv = document.createElement('div');
+                    bookDiv.id = `book-${book.id}`;
                     bookDiv.className = 'book';
                     bookDiv.style.width = '200px';
                     bookDiv.style.height = bookHeight + 'px';
+                    bookDiv.style.transform = 'rotateY(90deg)';
                     bookDiv.style.setProperty('--thickness', nonlinearThickness + 'px');
+                    bookDiv.onclick = function() {
+                        toggleBook(this.id);
+                    };
 
                     bookDiv.innerHTML = `
                         <img class="cover" src="${book.cover_url}" 
@@ -78,20 +105,17 @@
                              style="width: 200px; height: ${bookHeight}px; transform: translateZ(${pages/2}px)"
                              onerror="this.style.backgroundColor='${book.cover_color}'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='${book.title}';">
                         </img>
-                        <div class="spine" style="width: ${pages}px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}">
-                            <div class="spinetext">
-                                <span class="title">${book.title || ''}</span>
-                                <br>
+                        <div class="spine" style="width: ${pages}px; height: ${bookHeight}px; background: ${book.cover_color || '#8B4513'} linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.1) 80%, rgba(255,255,255,0) 100%); color: ${book.cover_contrast || '#eee'}; line-height: ${pages}px; transform: translateX(-${pages/2}px) translateY(-${bookHeight}px) rotateY(-90deg);">
+                            <div class="spinetext" style="width: 100%; height: ${bookHeight}px;">
+                                <span class="title">${book.title || ''}</span><br>
                                 <span class="author">${book.author || ''}</span>
                             </div>
                         </div>
-                        <div class="back" style="width: 200px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}; color: ${book.cover_contrast || '#eee'}">
-                            <div class="backtext">
-                                <h2>${book.title || 'Unknown Title'}</h2>
-                                <h3>${book.author || 'Unknown Author'}</h3>
-                                <p class="description">${book.description || 'No description available.'}</p>
-                                <p class="pagecount">${book.page_count || '?'} pages</p>
+                        <div class="back" style="color: ${book.cover_contrast || '#eee'}; width: 200px; height: ${bookHeight}px; background: ${book.cover_color || '#8B4513'}; transform: translateY(-${bookHeight * 2}px) translateZ(-${pages/2}px) rotateY(180deg);">
+                            <div style="width: 184px; height: ${bookHeight - 24}px; overflow: hidden; padding: 8px;">${book.description || 'No description available.'}</div>
+                            <div style="width: 184px; height: 8px; text-align: center; padding: 0 8px;">
                                 ${book.book_url ? `<a href="${book.book_url}" target="_blank" rel="noopener noreferrer" style="float:left;color:${book.cover_contrast || '#eee'}">View</a>` : ''}
+                                <span style="float:right;">${book.page_count || '?'} pages</span>
                             </div>
                         </div>
                         <div class="side left" style="width: ${pages}px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}"></div>
@@ -100,8 +124,25 @@
                         <div class="side bottom" style="width: 200px; height: ${pages}px; background-color: ${book.cover_color || '#8B4513'}"></div>
                     `;
 
-                    container.appendChild(bookDiv);
+                    bookContainer.appendChild(bookDiv);
+                    container.appendChild(bookContainer);
+                    offset += nonlinearThickness;
                 });
+
+                // Add toggleBook function
+                window.toggleBook = function(id) {
+                    const book = document.getElementById(id);
+                    if (!book) return;
+                    
+                    const classes = book.className;
+                    if (classes.includes('book-showback')) {
+                        book.className = 'book book-putaway';
+                    } else if (classes.includes('book-show')) {
+                        book.className = 'book book-showback';
+                    } else {
+                        book.className = 'book book-show';
+                    }
+                };
             })
             .catch(error => {
                 console.error('Error loading books:', error);
