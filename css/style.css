@@ -159,13 +159,16 @@ body[data-theme="dark"] {
   width: 100%;
 }
 
-.pages {
+.pages,
+.side {
   visibility: hidden;
   pointer-events: none;
 }
 
-.side {
-  pointer-events: none;
+/* Only show sides when book is being viewed (show/showback states) */
+.book-show .side,
+.book-showback .side {
+  visibility: visible;
 }
 
 /* Theme Toggle Button */
