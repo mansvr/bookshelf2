@@ -15,9 +15,24 @@ Write-Host ""
 # Check prerequisites
 Write-Host "Checking prerequisites..." -ForegroundColor Yellow
 
+# Set script directory and add Ruby to PATH
+Set-Location $PSScriptRoot
+$rubyPaths = @(
+    "C:\Ruby33-x64\bin",
+    "C:\Ruby32-x64\bin",
+    "C:\Ruby31-x64\bin"
+)
+foreach ($path in $rubyPaths) {
+    if (Test-Path $path) {
+        $env:PATH = "$path;$env:PATH"
+        break
+    }
+}
+
 # Check Ruby
 if (-not (Get-Command ruby -ErrorAction SilentlyContinue)) {
     Write-Host "[ERROR] Ruby not found!" -ForegroundColor Red
+    Write-Host "Please install Ruby or set the correct path" -ForegroundColor Yellow
     exit 1
 }
 Write-Host "[OK] Ruby found" -ForegroundColor Green
@@ -62,7 +77,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Load metadata
-$metadata = Get-Content "public\books.json" | ConvertFrom-Json
+$metadata = Get-Content "books.json" | ConvertFrom-Json
 Write-Host "[OK] Loaded $($metadata.Count) books from metadata" -ForegroundColor Green
 Write-Host ""
 

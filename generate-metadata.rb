@@ -6,7 +6,7 @@ require_relative 'calibre.rb'
 
 # Configuration
 CALIBRE_PATH = ARGV[0] || "D:\\BIBLIO_\\calibre"
-OUTPUT_FILE = "public/books.json"
+OUTPUT_FILE = "books.json"
 DRIVE_BASE_URL = "https://drive.google.com"
 
 puts "=" * 60
@@ -56,10 +56,6 @@ books.each_with_index do |book, index|
     next
   end
 end
-
-# Create public directory if it doesn't exist
-require 'fileutils'
-FileUtils.mkdir_p('public')
 
 # Write metadata
 puts ""
