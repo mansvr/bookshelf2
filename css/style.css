@@ -1,0 +1,247 @@
+@font-face {
+    font-family: 'Antonio'; 
+    src: url('/fonts/antonio/Antonio-Regular.ttf');
+}
+@font-face {
+    font-family: 'Patua'; 
+    src: url('/fonts/patua-one/PatuaOne-Regular.otf');
+}
+
+/* Reset and body styling */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    overflow: hidden; /* Lock page to viewport, prevent scroll */
+    height: 100vh;
+    max-height: 100vh;
+    transition: background 0.3s ease;
+}
+
+/* Light Theme (Default) */
+body[data-theme="light"] {
+    background: #ffffff;
+}
+
+/* Dark Theme */
+body[data-theme="dark"] {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+}
+
+/* Wrapper to center the bookshelf */
+.bookshelf-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    max-height: 100vh;
+    padding: 20px;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+/* Responsive container scaling */
+.container {
+    transform-style: preserve-3d;
+    position: relative;
+    transform-origin: center center;
+}
+
+/* Scale bookshelf based on viewport */
+@media (max-width: 1800px) {
+    .container {
+        transform: scale(0.9);
+    }
+}
+
+@media (max-width: 1400px) {
+    .container {
+        transform: scale(0.75);
+    }
+    .bookshelf-wrapper {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .container {
+        transform: scale(0.6);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        transform: scale(0.45);
+    }
+    body {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        transform: scale(0.35);
+    }
+    .bookshelf-wrapper {
+        padding: 5px;
+        justify-content: flex-start;
+    }
+}
+
+.book-container,
+.book {
+    transform-style: preserve-3d;
+    position: absolute;
+}
+
+.book {
+    cursor: pointer;
+    user-select: none;
+}
+
+.book * {
+    user-select: none;
+}
+
+.book a {
+    cursor: pointer;
+    user-select: auto;
+}
+
+.spinetext {
+  overflow: hidden;
+  text-align: center;
+  writing-mode: vertical-rl;
+  cursor: pointer;
+  user-select: none;
+}
+
+.spinetext .title {
+  font-family: Patua;
+  overflow: hidden;
+}
+
+.spinetext .author {
+  font-family: Antonio;
+}
+
+.spine .series-index {
+  text-align: center;
+  width: 100%;
+  height: 20px;
+  vertical-align: middle;
+  font-size: 10px;
+  line-height: 20px;
+}
+
+.cover {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.back {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  font-size: 8px;
+  box-sizing: border-box;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.logo {
+  width: 100%;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* Icon styling */
+.sun-icon,
+.moon-icon {
+  position: absolute;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+/* Light theme - show moon (for switching to dark) */
+body[data-theme="light"] .sun-icon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+body[data-theme="light"] .moon-icon {
+  opacity: 0;
+  transform: rotate(180deg) scale(0);
+}
+
+/* Dark theme - show sun (for switching to light) */
+body[data-theme="dark"] .sun-icon {
+  opacity: 0;
+  transform: rotate(-180deg) scale(0);
+}
+
+body[data-theme="dark"] .moon-icon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+  color: #ffd700;
+}
+
+/* Dark theme button styling */
+body[data-theme="dark"] .theme-toggle-btn {
+  background: rgba(50, 50, 50, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive button size */
+@media (max-width: 768px) {
+  .theme-toggle {
+    top: 10px;
+    right: 10px;
+  }
+  
+  .theme-toggle-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .sun-icon,
+  .moon-icon {
+    width: 20px;
+    height: 20px;
+  }
+}

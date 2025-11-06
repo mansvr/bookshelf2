@@ -1,0 +1,50 @@
+# Local Calibre database (too large for Git)
+metadata.db
+metadata.db-journal
+*.db
+*.db-journal
+
+# Credentials and configuration
+google-drive-credentials.json
+rclone.conf
+.rclone.conf
+
+# Local book files (stored in Calibre, synced to Drive)
+D:/
+*.pdf
+*.epub
+*.mobi
+
+# Ruby
+.bundle/
+vendor/bundle/
+Gemfile.lock
+
+# Temp files
+temp_sync/
+*.tmp
+*.log
+
+# Executables
+rclone.exe
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Vercel
+.vercel/
+
+# Keep these important files for deployment
+!index.html
+!books.json
+!css/
+!fonts/
+

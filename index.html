@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Bookshelf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/anim.css">
+</head>
+<body data-theme="dark">
+    <!-- Theme Toggle -->
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <div class="bookshelf-wrapper">
+        <div class="container" id="bookshelf">
+            <h1>Loading bookshelf...</h1>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Load and render books
+        fetch('/books.json?v=' + Date.now())
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Failed to load books.json: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(books => {
+                console.log('Loaded books:', books.length);
+                const container = document.getElementById('bookshelf');
+                container.innerHTML = '';
+
+                books.forEach(book => {
+                    // Calculate dimensions
+                    const pages = book.page_count || 300;
+                    const nonlinearThickness = book.nonlinear_thickness || 20;
+                    const aspectRatio = book.aspect_ratio || 0.67;
+                    const bookHeight = 200 / aspectRatio;
+                    
+                    // Create book element
+                    const bookDiv = document.createElement('div');
+                    bookDiv.className = 'book';
+                    bookDiv.style.width = '200px';
+                    bookDiv.style.height = bookHeight + 'px';
+                    bookDiv.style.setProperty('--thickness', nonlinearThickness + 'px');
+
+                    bookDiv.innerHTML = `
+                        <img class="cover" src="${book.cover_url}" 
+                             alt="${book.title}"
+                             style="width: 200px; height: ${bookHeight}px; transform: translateZ(${pages/2}px)"
+                             onerror="this.style.backgroundColor='${book.cover_color}'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='${book.title}';">
+                        </img>
+                        <div class="spine" style="width: ${pages}px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}">
+                            <div class="spinetext">
+                                <span class="title">${book.title || ''}</span>
+                                <br>
+                                <span class="author">${book.author || ''}</span>
+                            </div>
+                        </div>
+                        <div class="back" style="width: 200px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}; color: ${book.cover_contrast || '#eee'}">
+                            <div class="backtext">
+                                <h2>${book.title || 'Unknown Title'}</h2>
+                                <h3>${book.author || 'Unknown Author'}</h3>
+                                <p class="description">${book.description || 'No description available.'}</p>
+                                <p class="pagecount">${book.page_count || '?'} pages</p>
+                                ${book.book_url ? `<a href="${book.book_url}" target="_blank" rel="noopener noreferrer" style="float:left;color:${book.cover_contrast || '#eee'}">View</a>` : ''}
+                            </div>
+                        </div>
+                        <div class="side left" style="width: ${pages}px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}"></div>
+                        <div class="side right" style="width: ${pages}px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}"></div>
+                        <div class="side top" style="width: 200px; height: ${pages}px; background-color: ${book.cover_color || '#8B4513'}"></div>
+                        <div class="side bottom" style="width: 200px; height: ${pages}px; background-color: ${book.cover_color || '#8B4513'}"></div>
+                    `;
+
+                    container.appendChild(bookDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading books:', error);
+                document.getElementById('bookshelf').innerHTML = `
+                    <div style="padding: 20px; text-align: center;">
+                        <h1>Error loading bookshelf</h1>
+                        <p style="color: #ff6b6b;">${error.message}</p>
+                        <p>Check the console for more details (F12)</p>
+                        <p>Trying to load from: <code>${window.location.origin}/books.json</code></p>
+                    </div>
+                `;
+            });
+    </script>
+</body>
+</html>
+

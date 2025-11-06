@@ -1,0 +1,19 @@
+[
+    {
+        "id": 1,
+        "title": "Sample Book",
+        "author": "Author Name",
+        "author_sort": "Name, Author",
+        "description": "This is a placeholder. Run deploy-workflow.ps1 to sync your actual books from Calibre.",
+        "cover_url": "https://via.placeholder.com/200x300/8B4513/FFFFFF?text=Sample+Book",
+        "book_url": "#",
+        "cover_color": "#8B4513",
+        "cover_contrast": "#eee",
+        "page_count": 300,
+        "aspect_ratio": 0.67,
+        "nonlinear_thickness": 25,
+        "series": "",
+        "series_index": 1.0
+    }
+]
+
