@@ -1,0 +1,12 @@
+# Ignore files not needed for Vercel deployment
+public/
+views/
+*.rb
+*.ps1
+Gemfile
+.ruby-version
+rclone.exe
+metadata.db
+books.json.template
+temp_sync/
+
