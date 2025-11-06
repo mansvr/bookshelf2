@@ -79,15 +79,14 @@
                 let offset = 0;
                 books.forEach((book, index) => {
                     // Calculate dimensions
-                    const pages = book.page_count || 300;
-                    const nonlinearThickness = book.nonlinear_thickness || 20;
+                    const pages = book.nonlinear_thickness || 20; // Thickness in pixels (NOT page count!)
                     const aspectRatio = book.aspect_ratio || 0.67;
                     const bookHeight = 200 / aspectRatio;
                     
                     // Create book container with positioning
                     const bookContainer = document.createElement('div');
                     bookContainer.className = 'book-container';
-                    bookContainer.style.transform = `translateX(${offset + nonlinearThickness/2}px) translateY(${maxHeight - bookHeight}px)`;
+                    bookContainer.style.transform = `translateX(${offset + pages/2}px) translateY(${maxHeight - bookHeight}px)`;
                     
                     // Create book element
                     const bookDiv = document.createElement('div');
@@ -96,7 +95,7 @@
                     bookDiv.style.width = '200px';
                     bookDiv.style.height = bookHeight + 'px';
                     bookDiv.style.transform = 'rotateY(90deg)';
-                    bookDiv.style.setProperty('--thickness', nonlinearThickness + 'px');
+                    bookDiv.style.setProperty('--thickness', pages + 'px');
                     bookDiv.onclick = function() {
                         toggleBook(this.id);
                     };
@@ -129,7 +128,7 @@
 
                     bookContainer.appendChild(bookDiv);
                     container.appendChild(bookContainer);
-                    offset += nonlinearThickness;
+                    offset += pages;
                 });
 
                 // Add book interaction functions
