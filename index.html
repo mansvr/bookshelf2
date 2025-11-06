@@ -6,9 +6,10 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/anim.css">
 </head>
-<body data-theme="dark">
+<body>
     <!-- Theme Toggle -->
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+    <div class="theme-toggle">
+        <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle theme">
         <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -23,7 +24,8 @@
         <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
-    </button>
+        </button>
+    </div>
 
     <div class="bookshelf-wrapper">
         <div class="container" id="bookshelf">
@@ -33,15 +35,15 @@
 
     <script>
         // Theme toggle
-        const themeToggle = document.getElementById('theme-toggle');
-        const savedTheme = localStorage.getItem('theme') || 'dark';
+        const themeToggle = document.getElementById('themeToggle');
+        const savedTheme = localStorage.getItem('bookshelf-theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
 
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.body.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+            localStorage.setItem('bookshelf-theme', newTheme);
         });
 
         // Load and render books
@@ -118,10 +120,11 @@
                                 <span style="float:right;">${book.page_count || '?'} pages</span>
                             </div>
                         </div>
-                        <div class="side left" style="width: ${pages}px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}"></div>
-                        <div class="side right" style="width: ${pages}px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}"></div>
-                        <div class="side top" style="width: 200px; height: ${pages}px; background-color: ${book.cover_color || '#8B4513'}"></div>
-                        <div class="side bottom" style="width: 200px; height: ${pages}px; background-color: ${book.cover_color || '#8B4513'}"></div>
+                        <div class="side left" style="width: ${pages}px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}; transform: translateZ(-${pages/2}px) rotateY(90deg);"></div>
+                        <div class="side right" style="width: ${pages}px; height: ${bookHeight}px; background-color: ${book.cover_color || '#8B4513'}; transform: translateX(200px) translateZ(-${pages/2}px) translateY(-${bookHeight}px) rotateY(90deg);"></div>
+                        <div class="side top" style="width: 200px; height: ${pages}px; background-color: ${book.cover_color || '#8B4513'}; transform: translateY(-${bookHeight}px) translateZ(-${pages/2}px) rotateX(90deg);"></div>
+                        <div class="side bottom" style="width: 200px; height: ${pages}px; background-color: ${book.cover_color || '#8B4513'}; transform: translateY(-${bookHeight * 2}px) translateZ(${pages/2}px) rotateX(90deg);"></div>
+                        <div class="pages" style="width: ${pages - 1}px; height: ${bookHeight - 6}px; background: #f1f1f1; transform: translateY(-${bookHeight * 3 - 3}px) translateX(${200 - pages/2 - 3}px) rotateY(90deg);"></div>
                     `;
 
                     bookContainer.appendChild(bookDiv);
@@ -129,18 +132,38 @@
                     offset += nonlinearThickness;
                 });
 
-                // Add toggleBook function
-                window.toggleBook = function(id) {
-                    const book = document.getElementById(id);
+                // Add book interaction functions
+                function replaceOtherBooks(book) {
+                    const books = document.querySelectorAll('.book');
+                    for (let i = 0; i < books.length; ++i) {
+                        if (books[i] != book) {
+                            if (books[i].className == "book book-show") {
+                                books[i].className = "book book-showaway";
+                            } else if (books[i].className == "book book-showback") {
+                                books[i].className = "book book-putaway";
+                            }
+                        }
+                    }
+                }
+
+                window.toggleBook = function(bookId) {
+                    const book = document.getElementById(bookId);
                     if (!book) return;
                     
-                    const classes = book.className;
-                    if (classes.includes('book-showback')) {
-                        book.className = 'book book-putaway';
-                    } else if (classes.includes('book-show')) {
-                        book.className = 'book book-showback';
+                    replaceOtherBooks(book);
+                    
+                    if (book.className == "book") {
+                        book.className = "book book-show";
+                    } else if (book.className == "book book-putaway") {
+                        book.className = "book book-show";
+                    } else if (book.className == "book book-showaway") {
+                        book.className = "book book-show";
+                    } else if (book.className == "book book-show") {
+                        book.className = "book book-showback";
+                    } else if (book.className == "book book-showback") {
+                        book.className = "book book-putaway";
                     } else {
-                        book.className = 'book book-show';
+                        book.className = "book";
                     }
                 };
             })
