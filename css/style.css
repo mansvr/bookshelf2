@@ -37,13 +37,12 @@ body[data-theme="dark"] {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    max-height: 100vh;
+    height: 100vh;
     padding: 20px;
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    clip-path: inset(0 0 0 0);
+    position: relative;
 }
 
 /* Responsive container scaling */
@@ -158,7 +157,8 @@ body[data-theme="dark"] {
   width: 100%;
 }
 
-.pages {
+.pages,
+.side {
   pointer-events: none;
 }
 
